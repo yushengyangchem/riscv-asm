@@ -5,8 +5,6 @@ This project is a small lab for learning two things:
 1. How standalone RISC-V assembly files (`.S`) call into C and are called from C.
 2. How GCC inline assembly works in C with `__asm__ __volatile__`, constraints, and clobbers.
 
-> Note: the correct spelling is `__volatile__`, not `__volatie__`.
-
 ## Enter the Environment
 
 ```sh
