@@ -12,5 +12,6 @@ pkgs.mkShell {
     nixfmt
     prettier
     asmfmt
+    just
   ];
 }
