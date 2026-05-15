@@ -9,7 +9,12 @@ QEMU ?= qemu-riscv64
 CFLAGS := -std=c11 -Wall -Wextra -O2 -g
 LDFLAGS :=
 
-SRCS := src/main.c src/asm_funcs.S
+SRCS := src/main.c \
+	src/asm_funcs.S \
+	src/asm_arith.S \
+	src/asm_branch.S \
+	src/asm_memory.S \
+	src/asm_stack.S
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 .PHONY: all run dump clean
