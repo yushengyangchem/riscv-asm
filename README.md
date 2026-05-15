@@ -26,6 +26,14 @@ make run
 
 `make run` uses `qemu-riscv64` to run the cross-compiled RISC-V Linux program, so you do not need a physical RISC-V machine.
 
+## Test
+
+```sh
+make test
+```
+
+The tests build a separate RISC-V executable from `src/test_asm.c` and run it through QEMU. They cover the standalone assembly examples with a few normal and edge-case inputs.
+
 ## Inspect Assembly
 
 ```sh
