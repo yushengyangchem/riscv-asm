@@ -5,7 +5,7 @@
 .globl asm_swap
 .type  asm_swap, @function
 
-asm_swap:
+asm_swap: // extern void asm_swap(int64_t *left, int64_t *right);
 	ld t0, 0(a0)
 	ld t1, 0(a1)
 	sd t1, 0(a0)
@@ -16,7 +16,7 @@ asm_swap:
 .globl asm_factorial
 .type  asm_factorial, @function
 
-asm_factorial:
+asm_factorial: // extern int64_t asm_factorial(int64_t n);
 	li   t0, 1
 	blez a0, 2f
 
@@ -33,7 +33,7 @@ asm_factorial:
 .globl asm_call_add_twice
 .type  asm_call_add_twice, @function
 
-asm_call_add_twice:
+asm_call_add_twice: // extern int64_t asm_call_add_twice(int64_t a, int64_t b, int64_t c);
 	// Save callee-saved state before calling another function.
 	addi sp, sp, -16
 	sd   ra, 8(sp)

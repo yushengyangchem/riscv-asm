@@ -5,7 +5,7 @@
 .globl asm_sub
 .type  asm_sub, @function
 
-asm_sub:
+asm_sub: // extern int64_t asm_sub(int64_t a, int64_t b);
 	sub a0, a0, a1
 	ret
 .size asm_sub, .-asm_sub
@@ -13,7 +13,7 @@ asm_sub:
 .globl asm_mul
 .type  asm_mul, @function
 
-asm_mul:
+asm_mul: // extern int64_t asm_mul(int64_t a, int64_t b);
 	mul a0, a0, a1
 	ret
 .size asm_mul, .-asm_mul
@@ -21,7 +21,7 @@ asm_mul:
 .globl asm_divmod
 .type  asm_divmod, @function
 
-asm_divmod:
+asm_divmod: // extern int64_t asm_divmod(int64_t a, int64_t b, int64_t *remainder);
 	beqz a1, 1f
 	rem  t0, a0, a1
 	div  a0, a0, a1
@@ -37,7 +37,7 @@ asm_divmod:
 .globl asm_bit_mix
 .type  asm_bit_mix, @function
 
-asm_bit_mix:
+asm_bit_mix: // extern int64_t asm_bit_mix(int64_t value, int64_t shamt);
 	// RISC-V RV64 variable shifts use the low 6 bits of the shift amount.
 	andi a1, a1, 63
 	sll  t0, a0, a1

@@ -5,7 +5,7 @@
 .globl asm_find_int
 .type  asm_find_int, @function
 
-asm_find_int:
+asm_find_int: // extern int64_t asm_find_int(const int32_t *items, int64_t count, int32_t target);
 	li   t0, 0
 	blez a1, 2f
 
@@ -28,7 +28,7 @@ asm_find_int:
 .globl asm_memset32
 .type  asm_memset32, @function
 
-asm_memset32:
+asm_memset32: // extern void asm_memset32(uint32_t *items, int64_t count, uint32_t value);
 	blez a1, 2f
 
 1:
@@ -44,7 +44,7 @@ asm_memset32:
 .globl asm_strlen
 .type  asm_strlen, @function
 
-asm_strlen:
+asm_strlen: // extern int64_t asm_strlen(const char *text);
 	li t0, 0
 
 1:
