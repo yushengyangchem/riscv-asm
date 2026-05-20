@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 extern int64_t asm_add(int64_t a, int64_t b);
-extern int32_t asm_sum_array(const int32_t *items, int64_t count);
+extern int64_t asm_sum_array(const int64_t *items, int64_t count);
 extern int64_t asm_sub(int64_t a, int64_t b);
 extern int64_t asm_mul(int64_t a, int64_t b);
 extern int64_t asm_divmod(int64_t a, int64_t b, int64_t *remainder);
@@ -11,9 +11,9 @@ extern int64_t asm_bit_mix(int64_t value, int64_t shamt);
 extern int64_t asm_max(int64_t a, int64_t b);
 extern int64_t asm_abs(int64_t value);
 extern int64_t asm_countdown_sum(int64_t n);
-extern int64_t asm_find_int(const int32_t *items, int64_t count,
-                            int32_t target);
-extern void asm_memset32(uint32_t *items, int64_t count, uint32_t value);
+extern int64_t asm_find_int(const int64_t *items, int64_t count,
+                            int64_t target);
+extern void asm_memset64(uint64_t *items, int64_t count, uint64_t value);
 extern int64_t asm_strlen(const char *text);
 extern void asm_swap(int64_t *left, int64_t *right);
 extern int64_t asm_factorial(int64_t n);
@@ -42,16 +42,6 @@ static void expect_u64(const char *name, uint64_t actual, uint64_t expected) {
   }
 
   printf("FAIL %-32s got 0x%" PRIx64 ", expected 0x%" PRIx64 "\n", name, actual,
-         expected);
-  failures++;
-}
-
-static void expect_u32(const char *name, uint32_t actual, uint32_t expected) {
-  if (actual == expected) {
-    return;
-  }
-
-  printf("FAIL %-32s got 0x%" PRIx32 ", expected 0x%" PRIx32 "\n", name, actual,
          expected);
   failures++;
 }
@@ -90,14 +80,17 @@ static void expect_double_close(const char *name, double actual,
 }
 
 static void test_basic_funcs(void) {
-  const int32_t items[] = {1, 2, 3, 4, 5};
-  const int32_t negatives[] = {-10, 20, -30, 40};
+  const int64_t items[] = {1, 2, 3, 4, 5};
+  const int64_t negatives[] = {-10, 20, -30, 40};
+  const int64_t wide[] = {INT64_C(0x100000000), 2};
 
   expect_i64("asm_add positive", asm_add(20, 22), 42);
   expect_i64("asm_add negative", asm_add(-5, 12), 7);
   expect_i64("asm_sum_array full", asm_sum_array(items, 5), 15);
   expect_i64("asm_sum_array empty", asm_sum_array(items, 0), 0);
   expect_i64("asm_sum_array mixed", asm_sum_array(negatives, 4), 20);
+  expect_i64("asm_sum_array wide", asm_sum_array(wide, 2),
+             INT64_C(0x100000002));
 }
 
 static void test_arith(void) {
@@ -131,20 +124,22 @@ static void test_branch(void) {
 }
 
 static void test_memory(void) {
-  const int32_t items[] = {1, 2, 3, 4, 5};
-  uint32_t words[] = {1, 2, 3, 4};
+  const int64_t items[] = {1, 2, 3, 4, INT64_C(0x100000005)};
+  uint64_t words[] = {1, 2, 3, 4};
 
   expect_i64("asm_find_int middle", asm_find_int(items, 5, 4), 3);
   expect_i64("asm_find_int first", asm_find_int(items, 5, 1), 0);
+  expect_i64("asm_find_int wide", asm_find_int(items, 5, INT64_C(0x100000005)),
+             4);
   expect_i64("asm_find_int missing", asm_find_int(items, 5, 99), -1);
   expect_i64("asm_find_int empty", asm_find_int(items, 0, 1), -1);
 
-  asm_memset32(words, 4, 0xfeedfaceu);
-  expect_u32("asm_memset32 first", words[0], 0xfeedfaceu);
-  expect_u32("asm_memset32 last", words[3], 0xfeedfaceu);
+  asm_memset64(words, 4, UINT64_C(0xfeedfacecafebeef));
+  expect_u64("asm_memset64 first", words[0], UINT64_C(0xfeedfacecafebeef));
+  expect_u64("asm_memset64 last", words[3], UINT64_C(0xfeedfacecafebeef));
 
-  asm_memset32(words, 0, 0);
-  expect_u32("asm_memset32 zero count", words[0], 0xfeedfaceu);
+  asm_memset64(words, 0, 0);
+  expect_u64("asm_memset64 zero count", words[0], UINT64_C(0xfeedfacecafebeef));
 
   expect_i64("asm_strlen text", asm_strlen("riscv"), 5);
   expect_i64("asm_strlen empty", asm_strlen(""), 0);

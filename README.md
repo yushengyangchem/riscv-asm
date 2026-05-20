@@ -53,7 +53,7 @@ The standalone assembly examples are split by topic:
 - `src/asm_funcs.S`: first minimal examples, including a scalar add and an array sum.
 - `src/asm_arith.S`: arithmetic, multiply/divide/remainder, shifts, and bitwise ops.
 - `src/asm_branch.S`: signed branches, simple selection, and counted loops.
-- `src/asm_memory.S`: `lw`, `sw`, `lbu`, pointer increments, and sentinel loops.
+- `src/asm_memory.S`: `ld`, `sd`, `lbu`, pointer increments, and sentinel loops.
 - `src/asm_stack.S`: memory through pointers, a leaf loop, and a non-leaf function that saves `ra`/`s0` on the stack before calling another assembly function.
 - `src/asm_float.S`: single- and double-precision floating-point arithmetic, fused multiply-add, max, and conversion to integer.
 

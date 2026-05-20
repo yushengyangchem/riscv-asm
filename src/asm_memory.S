@@ -1,18 +1,18 @@
 .text
 
-// Memory examples: word loads/stores, byte loads, and pointer increments.
+// Memory examples: doubleword loads/stores, byte loads, and pointer increments.
 
 .globl asm_find_int
 .type  asm_find_int, @function
 
-asm_find_int: // extern int64_t asm_find_int(const int32_t *items, int64_t count, int32_t target);
+asm_find_int: // extern int64_t asm_find_int(const int64_t *items, int64_t count, int64_t target);
 	li   t0, 0
 	blez a1, 2f
 
 1:
-	lw   t1, 0(a0)
+	ld   t1, 0(a0)
 	beq  t1, a2, 3f
-	addi a0, a0, 4
+	addi a0, a0, 8
 	addi t0, t0, 1
 	blt  t0, a1, 1b
 
@@ -25,21 +25,21 @@ asm_find_int: // extern int64_t asm_find_int(const int32_t *items, int64_t count
 	ret
 .size asm_find_int, .-asm_find_int
 
-.globl asm_memset32
-.type  asm_memset32, @function
+.globl asm_memset64
+.type  asm_memset64, @function
 
-asm_memset32: // extern void asm_memset32(uint32_t *items, int64_t count, uint32_t value);
+asm_memset64: // extern void asm_memset64(uint64_t *items, int64_t count, uint64_t value);
 	blez a1, 2f
 
 1:
-	sw   a2, 0(a0)
-	addi a0, a0, 4
+	sd   a2, 0(a0)
+	addi a0, a0, 8
 	addi a1, a1, -1
 	bnez a1, 1b
 
 2:
 	ret
-.size asm_memset32, .-asm_memset32
+.size asm_memset64, .-asm_memset64
 
 .globl asm_strlen
 .type  asm_strlen, @function

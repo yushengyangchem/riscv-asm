@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 extern int64_t asm_add(int64_t a, int64_t b);
-extern int32_t asm_sum_array(const int32_t *items, int64_t count);
+extern int64_t asm_sum_array(const int64_t *items, int64_t count);
 extern int64_t asm_sub(int64_t a, int64_t b);
 extern int64_t asm_mul(int64_t a, int64_t b);
 extern int64_t asm_divmod(int64_t a, int64_t b, int64_t *remainder);
@@ -11,9 +11,9 @@ extern int64_t asm_bit_mix(int64_t value, int64_t shamt);
 extern int64_t asm_max(int64_t a, int64_t b);
 extern int64_t asm_abs(int64_t value);
 extern int64_t asm_countdown_sum(int64_t n);
-extern int64_t asm_find_int(const int32_t *items, int64_t count,
-                            int32_t target);
-extern void asm_memset32(uint32_t *items, int64_t count, uint32_t value);
+extern int64_t asm_find_int(const int64_t *items, int64_t count,
+                            int64_t target);
+extern void asm_memset64(uint64_t *items, int64_t count, uint64_t value);
 extern int64_t asm_strlen(const char *text);
 extern void asm_swap(int64_t *left, int64_t *right);
 extern int64_t asm_factorial(int64_t n);
@@ -50,22 +50,22 @@ static inline void compiler_memory_barrier(void) {
   __asm__ __volatile__("" ::: "memory");
 }
 
-static int32_t store_then_load_with_barrier(int32_t *slot, int32_t value) {
+static int64_t store_then_load_with_barrier(int64_t *slot, int64_t value) {
   *slot = value;
   compiler_memory_barrier();
   return *slot;
 }
 
 int main(void) {
-  int32_t items[] = {1, 2, 3, 4, 5};
-  uint32_t words[4] = {0};
-  int32_t slot = 0;
+  int64_t items[] = {1, 2, 3, 4, 5};
+  uint64_t words[4] = {0};
+  int64_t slot = 0;
   int64_t remainder = 0;
   int64_t left = 11;
   int64_t right = 99;
 
   printf("pure .S asm_add(20, 22)          = %" PRId64 "\n", asm_add(20, 22));
-  printf("pure .S asm_sum_array(items, 5)  = %" PRId32 "\n",
+  printf("pure .S asm_sum_array(items, 5)  = %" PRId64 "\n",
          asm_sum_array(items, 5));
   printf("arith asm_sub(20, 7)             = %" PRId64 "\n", asm_sub(20, 7));
   printf("arith asm_mul(6, 7)              = %" PRId64 "\n", asm_mul(6, 7));
@@ -80,8 +80,8 @@ int main(void) {
          asm_countdown_sum(10));
   printf("memory asm_find_int(items,5,4)   = %" PRId64 "\n",
          asm_find_int(items, 5, 4));
-  asm_memset32(words, 4, 0xfeedfaceu);
-  printf("memory asm_memset32 words[2]     = 0x%" PRIx32 "\n", words[2]);
+  asm_memset64(words, 4, 0xfeedfacecafebeefULL);
+  printf("memory asm_memset64 words[2]     = 0x%" PRIx64 "\n", words[2]);
   printf("memory asm_strlen(\"riscv\")       = %" PRId64 "\n",
          asm_strlen("riscv"));
   asm_swap(&left, &right);
@@ -103,7 +103,7 @@ int main(void) {
          inline_add_in_place(100, 23));
   printf("inline asm read sp               = 0x%" PRIx64 "\n",
          inline_read_sp());
-  printf("memory barrier store/load        = %" PRId32 "\n",
+  printf("memory barrier store/load        = %" PRId64 "\n",
          store_then_load_with_barrier(&slot, 99));
 
   return 0;
