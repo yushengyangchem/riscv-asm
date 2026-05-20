@@ -18,6 +18,11 @@ extern int64_t asm_strlen(const char *text);
 extern void asm_swap(int64_t *left, int64_t *right);
 extern int64_t asm_factorial(int64_t n);
 extern int64_t asm_call_add_twice(int64_t a, int64_t b, int64_t c);
+extern float asm_fadd(float a, float b);
+extern float asm_fmuladd(float a, float b, float c);
+extern double asm_ddiv(double a, double b);
+extern double asm_dmax(double a, double b);
+extern int64_t asm_double_to_i64(double value);
 
 static int failures;
 
@@ -48,6 +53,39 @@ static void expect_u32(const char *name, uint32_t actual, uint32_t expected) {
 
   printf("FAIL %-32s got 0x%" PRIx32 ", expected 0x%" PRIx32 "\n", name, actual,
          expected);
+  failures++;
+}
+
+static void expect_float_close(const char *name, float actual, float expected,
+                               float tolerance) {
+  float diff = actual - expected;
+
+  if (diff < 0.0f) {
+    diff = -diff;
+  }
+
+  if (diff <= tolerance) {
+    return;
+  }
+
+  printf("FAIL %-32s got %.9g, expected %.9g\n", name, (double)actual,
+         (double)expected);
+  failures++;
+}
+
+static void expect_double_close(const char *name, double actual,
+                                double expected, double tolerance) {
+  double diff = actual - expected;
+
+  if (diff < 0.0) {
+    diff = -diff;
+  }
+
+  if (diff <= tolerance) {
+    return;
+  }
+
+  printf("FAIL %-32s got %.17g, expected %.17g\n", name, actual, expected);
   failures++;
 }
 
@@ -127,12 +165,23 @@ static void test_stack(void) {
   expect_i64("asm_call_add_twice mixed", asm_call_add_twice(-10, 5, 2), -3);
 }
 
+static void test_float(void) {
+  expect_float_close("asm_fadd", asm_fadd(1.25f, 2.5f), 3.75f, 0.000001f);
+  expect_float_close("asm_fmuladd", asm_fmuladd(2.0f, 3.5f, 1.25f), 8.25f,
+                     0.000001f);
+  expect_double_close("asm_ddiv", asm_ddiv(22.0, 7.0), 22.0 / 7.0, 1e-12);
+  expect_double_close("asm_dmax left", asm_dmax(9.5, -3.0), 9.5, 0.0);
+  expect_double_close("asm_dmax right", asm_dmax(-3.0, 9.5), 9.5, 0.0);
+  expect_i64("asm_double_to_i64", asm_double_to_i64(-12.75), -12);
+}
+
 int main(void) {
   test_basic_funcs();
   test_arith();
   test_branch();
   test_memory();
   test_stack();
+  test_float();
 
   if (failures != 0) {
     printf("%d assembly test(s) failed\n", failures);

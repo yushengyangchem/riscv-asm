@@ -18,6 +18,11 @@ extern int64_t asm_strlen(const char *text);
 extern void asm_swap(int64_t *left, int64_t *right);
 extern int64_t asm_factorial(int64_t n);
 extern int64_t asm_call_add_twice(int64_t a, int64_t b, int64_t c);
+extern float asm_fadd(float a, float b);
+extern float asm_fmuladd(float a, float b, float c);
+extern double asm_ddiv(double a, double b);
+extern double asm_dmax(double a, double b);
+extern int64_t asm_double_to_i64(double value);
 
 static inline int64_t inline_add(int64_t a, int64_t b) {
   int64_t out;
@@ -85,6 +90,14 @@ int main(void) {
   printf("stack asm_factorial(6)           = %" PRId64 "\n", asm_factorial(6));
   printf("stack asm_call_add_twice(1,2,3)  = %" PRId64 "\n",
          asm_call_add_twice(1, 2, 3));
+  printf("float asm_fadd(1.25, 2.5)        = %.2f\n",
+         (double)asm_fadd(1.25f, 2.5f));
+  printf("float asm_fmuladd(2, 3.5, 1.25)  = %.2f\n",
+         (double)asm_fmuladd(2.0f, 3.5f, 1.25f));
+  printf("float asm_ddiv(22, 7)            = %.12f\n", asm_ddiv(22.0, 7.0));
+  printf("float asm_dmax(-3, 9.5)          = %.2f\n", asm_dmax(-3.0, 9.5));
+  printf("float asm_double_to_i64(-12.75)  = %" PRId64 "\n",
+         asm_double_to_i64(-12.75));
   printf("inline asm add(7, 8)             = %" PRId64 "\n", inline_add(7, 8));
   printf("inline asm +r add_in_place       = %" PRId64 "\n",
          inline_add_in_place(100, 23));

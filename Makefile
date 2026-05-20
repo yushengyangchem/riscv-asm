@@ -14,7 +14,8 @@ ASM_SRCS := src/asm_funcs.S \
 	src/asm_arith.S \
 	src/asm_branch.S \
 	src/asm_memory.S \
-	src/asm_stack.S
+	src/asm_stack.S \
+	src/asm_float.S
 
 SRCS := src/main.c $(ASM_SRCS)
 TEST_SRCS := src/test_asm.c $(ASM_SRCS)
